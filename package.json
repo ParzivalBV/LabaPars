@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lind": "eslind --ignore-path .gitignore ."
+    "lind": "eslind --ignore-path .gitignore .",
+    "start": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ParzivalBV/LabaPars.git"
   },
   "keywords": [],
   "author": "",
