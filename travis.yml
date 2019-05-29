@@ -1,7 +1,12 @@
 language: node_js
+node_js:
+  - "11"
+cache: npm
 
-# whitelist
-branches:
-  only:
-    - master
-    - stable
+script: npm run lint
+deploy:
+  provider: heroku
+  api_key: $HE_TOKEN
+  app:
+    master: pervayapp
+    test: pevayaapp-test

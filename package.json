@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lind": "eslind --ignore-path .gitignore .",
-    "start": ""
+    "lint": "eslint --ignore-path .gitignore .",
+    "start": "node index.js",
+    "deploy": "now alias --token $NOW_TOKEN $(now -e TOKEN=@mykey --token $NOW_TOKEN --name \"bot-$TRAVIS_BRANCH\") \"bot-$TRAVIS_BRANCH\"",
+    "build": ""
   },
   "repository": {
     "type": "git",
@@ -19,5 +21,12 @@
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.17.2"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "jsdom": "^15.1.1"
   }
 }

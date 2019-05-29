@@ -1,59 +1,41 @@
-var express = require("express");
-var app = express();
-var bodyParser = require("body-parser");
-require("dotenv").config();
-const axios = require("axios");
+const express = require('express');
+const axios = require('axios');
+const { JSDOM } = require('jsdom');
+const bodyParser = require('body-parser');
+
+const token = process.env.WEATHER_BOT;
+const appUrl = process.env.APP_URL;
+
+const setWebhook = url => axios.get(`https://api.telegram.org/bot${token}/setWebhook?url=${url}`);
+const sendMessage = (chatId, text) => axios.get(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}`);
+const parseWeather = async (date) => {
+    const {
+        window: { document },
+    } = await JSDOM.fromURL('https://ua.sinoptik.ua/%D0%BF%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0-%D0%BA%D0%B8%D1%97%D0%B2', {
+        resources: 'usable',
+        runScripts: 'dangerously',
+    });
+    const tabs = Array.from(document.querySelectorAll('.main'));
+    const tab = tabs.filter(el => el.querySelector('.day-link').getAttribute('data-link').includes(date))[0];
+    return tab ? tab.querySelector('.temperature').textContent : 'no info';
+};
+
+const app = express();
 app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true
-  })
-);
-
-let telegram_url = "https://api.telegram.org/bot" + process.env.TELEGRAM_API_TOKEN +"/sendMessage";
-let openWeatherUrl = process.env.OPENWEATHER_API_URL;
-
-app.post("/start_bot", function(req, res) {
-    const { message } = req.body;
-    let reply = "Welcome to telegram weather bot";
-    let city_check = message.text.toLowerCase().indexOf('/');
-    if(message.text.toLowerCase().indexOf("hi") !== -1){
-        sendMessage(telegram_url,message,reply,res);
-    }else if( (message.text.toLowerCase().indexOf("check") !== -1) && (city_check !== -1 ) ){
-        city = message.text.split('/')[1];
-        get_forecast(city).then( response =>{
-            post_forecast(telegram_url,response,message,res)
-        });
-    }else{
-        reply = "request not understood, please review and try again.";
-        sendMessage(telegram_url,message,reply,res);
-        return res.end();
-}
+app.post('/telegram', (req, res) => {
+    const {
+        text,
+        chat: { id },
+    } = req.body.message;
+    parseWeather(text).then(
+        weather => sendMessage(id, weather),
+        () => sendMessage(id, 'error'),
+    );
+    res.send();
 });
-
-function sendMessage(url, message,reply,res){
-    axios.post(url, {chat_id: message.chat.id,
-    text: reply
-}).then(response => {
-        console.log("Message posted");
-        res.end("ok");
-    }).catch(error =>{
-        console.log(error);
-    });
-}
-
-function get_forecast(city){
-    let new_url = openWeatherUrl + city+"&appid="+process.env.OPENWEATHER_API_KEY;
-    return axios.get(new_url).then(response => {
-        let temp = response.data.main.temp;
-        //converts temperature from kelvin to celsuis
-        temp = Math.round(temp - 273.15);
-        let city_name = response.data.name;
-        let resp = "It's "+temp+" degrees in "+city_name;
-        return resp;
-    }).catch(error => {
-        console.log(error);
-    });
-}
-
-app.listen(3000, () => console.log("Telegram bot is listening on port 3000!"));
+app.get('*', (_req, res) => {
+    res.send('Hello from Express.js!');
+});
+app.listen(process.env.PORT || 3000, () => {
+    setWebhook(`${appUrl}/telegram`);
+});
