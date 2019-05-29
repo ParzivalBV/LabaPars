@@ -3,8 +3,8 @@ const axios = require('axios');
 const { JSDOM } = require('jsdom');
 const bodyParser = require('body-parser');
 
-const token = process.env.WEATHER_BOT;
-const appUrl = process.env.APP_URL;
+const token = "807164513:AAGNeT5NSDJiCKuxua37BHYg9wiLMcxMIDM";
+const appUrl = "bot.parzival.now.sh";
 
 const setWebhook = url => axios.get(`https://api.telegram.org/bot${token}/setWebhook?url=${url}`);
 const sendMessage = (chatId, text) => axios.get(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}`);
@@ -36,6 +36,6 @@ app.post('/telegram', (req, res) => {
 app.get('*', (_req, res) => {
     res.send('Hello from Express.js!');
 });
-app.listen(process.env.PORT || 3000, () => {
+app.listen(3000, () => {
     setWebhook(`${appUrl}/telegram`);
 });
