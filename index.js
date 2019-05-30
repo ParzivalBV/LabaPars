@@ -4,7 +4,7 @@ const { JSDOM } = require('jsdom');
 const bodyParser = require('body-parser');
 
 const token = "807164513:AAGNeT5NSDJiCKuxua37BHYg9wiLMcxMIDM";
-const appUrl = "bot.parzival.now.sh";
+const appUrl = "https://botpars.herokuapp.com";
 
 const setWebhook = url => axios.get(`https://api.telegram.org/bot${token}/setWebhook?url=${url}`);
 const sendMessage = (chatId, text) => axios.get(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}`);
