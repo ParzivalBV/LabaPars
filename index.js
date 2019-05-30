@@ -36,6 +36,6 @@ app.post('/telegram', (req, res) => {
 app.get('*', (_req, res) => {
     res.send('Hello from Express.js!');
 });
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
     setWebhook(`${appUrl}/telegram`);
 });

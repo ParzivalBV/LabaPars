@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo && exit 1",
     "lint": "eslint --ignore-path .gitignore .",
-    "start": "node --no-warnings index.js",
+    "start": "node index.js",
     "deploy": "now alias --token $NOW_TOKEN $(now -e TOKEN=@mykey --token $NOW_TOKEN --name \"bot-$TRAVIS_BRANCH\") \"bot-$TRAVIS_BRANCH\"",
     "build": ""
   },
