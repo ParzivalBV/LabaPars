@@ -17,7 +17,7 @@ const parseWeather = async (date) => {
     });
     const tabs = Array.from(document.querySelectorAll('.main'));
     const tab = tabs.filter(el => el.querySelector('.day-link').getAttribute('data-link').includes(date))[0];
-    return tab ? tab.querySelector('.temperature').textContent : 'no info';
+    return tab && tab[0] != null ? tab.querySelector('.temperature').textContent : 'no info';
 };
 
 const app = express();
